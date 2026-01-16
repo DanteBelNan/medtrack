@@ -27,8 +27,17 @@ class MedicineControllerTest {
 
     @Test
      void shouldCreateMedicine() throws Exception {
-        String medicineJson = "{\"name\":\"Ibuprofeno\",\"dosage\":\"600mg\",\"active\":true}";
-
+        String medicineJson = """
+        {
+          "name": "Ibuprofeno",
+          "dosage": "600mg",
+          "schedules": [
+            {"dayOfWeek": "Monday", "intakeTime": "08:00:00"},
+            {"dayOfWeek": "Monday", "intakeTime": "20:00:00"}
+          ],
+          "active": true
+        }
+        """;
         mockMvc.perform(post("/api/medicines")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(medicineJson))
