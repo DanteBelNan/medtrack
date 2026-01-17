@@ -1,7 +1,7 @@
 package com.medtrack.controller;
 
 import com.medtrack.model.Medicine;
-import com.medtrack.repository.MedicineRepository;
+import com.medtrack.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,15 +12,20 @@ import java.util.List;
 public class MedicineController {
 
     @Autowired
-    private MedicineRepository repository;
+    private MedicineService medicineService;
 
     @GetMapping
     public List<Medicine> list() {
-        return repository.findAll();
+        return medicineService.findAll();
     }
 
     @PostMapping
     public Medicine create(@RequestBody Medicine medicine) {
-        return repository.save(medicine);
+        return medicineService.save(medicine);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Medicine> byUserId(@PathVariable Long userId){
+        return medicineService.findByUserId(userId);
     }
 }

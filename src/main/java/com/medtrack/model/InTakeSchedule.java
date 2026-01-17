@@ -1,12 +1,12 @@
-package com.medtrack.model;
+    package com.medtrack.model;
 
-import jakarta.persistence.Embeddable;
-import lombok.Data;
-import java.time.LocalTime;
+    import jakarta.persistence.Embeddable;
+    import lombok.Data;
+    import java.time.LocalTime;
 
-@Embeddable
-@Data
-public class InTakeSchedule {
-    private String dayOfWeek;
-    private LocalTime intakeTime;
-}
+    @Embeddable
+    @Data
+    public class InTakeSchedule {
+        private String dayOfWeek;
+        private LocalTime intakeTime;
+    }
