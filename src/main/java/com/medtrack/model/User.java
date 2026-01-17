@@ -16,8 +16,11 @@ public class User {
 
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(nullable = false)
+    private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")

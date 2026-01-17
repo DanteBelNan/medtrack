@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 class MedicineControllerTest {
 
     @Autowired
@@ -64,15 +64,16 @@ class MedicineControllerTest {
         User user = new User();
         user.setName("Dante");
         user.setEmail("dante@utn.com");
+        user.setPassword("testing123");
         user = userRepository.save(user);
 
         String medicineJson = """
-    {
-      "name": "Ibuprofeno",
-      "dosage": "600mg",
-      "userId": %d
-    }
-    """.formatted(user.getId());
+        {
+          "name": "Ibuprofeno",
+          "dosage": "600mg",
+          "userId": %d
+        }
+        """.formatted(user.getId());
 
         mockMvc.perform(post("/api/medicines")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -84,10 +85,10 @@ class MedicineControllerTest {
 
     @Test
     void shouldReturnMedicinesByUserId() throws Exception {
-        // 1. Setup User
         User user = new User();
         user.setName("John Doe");
         user.setEmail("johndoe@email.com");
+        user.setPassword("testing123");
         user = userRepository.save(user);
 
         Medicine med = new Medicine();
