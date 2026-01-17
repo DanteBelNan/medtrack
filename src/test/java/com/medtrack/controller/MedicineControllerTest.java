@@ -11,13 +11,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.hamcrest.Matchers.hasSize;
-import org.springframework.http.MediaType;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -35,8 +35,8 @@ class MedicineControllerTest {
 
     @BeforeEach
     void setup() {
-        userRepository.deleteAll();
         medicineRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -54,41 +54,40 @@ class MedicineControllerTest {
 
         mockMvc.perform(get("/api/medicines"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2))) // Verificamos que vengan 2
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name").value("Ibuprofeno"))
                 .andExpect(jsonPath("$[1].name").value("Aspirina"));
     }
 
     @Test
-    void shouldCreateMedicine() throws Exception {
+    void shouldCreateMedicineWithUser() throws Exception {
+        User user = new User();
+        user.setName("Dante");
+        user.setEmail("dante@utn.com");
+        user = userRepository.save(user);
+
         String medicineJson = """
-        {
-          "name": "Ibuprofeno",
-          "dosage": "600mg",
-          "active": true,
-          "schedules": [
-            {"dayOfWeek": "Monday", "intakeTime": "08:00:00"},
-            {"dayOfWeek": "Wednesday", "intakeTime": "20:00:00"}
-          ]
-        }
-        """;
+    {
+      "name": "Ibuprofeno",
+      "dosage": "600mg",
+      "userId": %d
+    }
+    """.formatted(user.getId());
+
         mockMvc.perform(post("/api/medicines")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(medicineJson))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("Ibuprofeno"))
-                .andExpect(jsonPath("$.schedules", hasSize(2)))
-                .andExpect(jsonPath("$.schedules[0].dayOfWeek").value("Monday"));
+                .andExpect(jsonPath("$.userId").value(user.getId().intValue()));
     }
 
     @Test
     void shouldReturnMedicinesByUserId() throws Exception {
-        // --- SETUP ---
-        // 1. Creamos un usuario
+        // 1. Setup User
         User user = new User();
-        user.setName("Dante Beltrán");
-        user.setEmail("dante.beltran@utn.edu.ar");
+        user.setName("John Doe");
+        user.setEmail("johndoe@email.com");
         user = userRepository.save(user);
 
         Medicine med = new Medicine();
@@ -101,6 +100,19 @@ class MedicineControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Loratadina"))
-                .andExpect(jsonPath("$[0].user.id").value(user.getId().intValue()));
+                .andExpect(jsonPath("$[0].userId").value(user.getId().intValue()));
+    }
+
+    @Test
+    void shouldReturnMedicineById() throws Exception {
+        Medicine med = new Medicine();
+        med.setName("Enalapril");
+        med.setDosage("5mg");
+        med = medicineRepository.save(med);
+
+        mockMvc.perform(get("/api/medicines/" + med.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Enalapril"))
+                .andExpect(jsonPath("$.dosage").value("5mg"));
     }
 }

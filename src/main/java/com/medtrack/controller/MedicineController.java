@@ -1,6 +1,6 @@
 package com.medtrack.controller;
 
-import com.medtrack.model.Medicine;
+import com.medtrack.dto.MedicineDTO;
 import com.medtrack.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +15,22 @@ public class MedicineController {
     private MedicineService medicineService;
 
     @GetMapping
-    public List<Medicine> list() {
+    public List<MedicineDTO> list() {
         return medicineService.findAll();
     }
 
     @PostMapping
-    public Medicine create(@RequestBody Medicine medicine) {
-        return medicineService.save(medicine);
+    public MedicineDTO create(@RequestBody MedicineDTO medicineDTO) {
+        return medicineService.save(medicineDTO);
     }
 
     @GetMapping("/user/{userId}")
-    public List<Medicine> byUserId(@PathVariable Long userId){
+    public List<MedicineDTO> byUserId(@PathVariable Long userId){
         return medicineService.findByUserId(userId);
+    }
+
+    @GetMapping("/{id}")
+    public MedicineDTO getById(@PathVariable Long id) {
+        return medicineService.findById(id);
     }
 }
