@@ -7,23 +7,21 @@ import java.util.List;
 
 @Entity
 @Data
-public class Remedio {
-
+public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
-    private String dosis;
+    private String name;
+    private String dosage;
 
     @ElementCollection
-    private List<String> dias;
-
-    private LocalTime horaToma;
+    @CollectionTable(name = "medicine_schedules", joinColumns = @JoinColumn(name = "medicine_id"))
+    private List<InTakeSchedule> schedules;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    private boolean activo = true;
+    private boolean active = true;
 }

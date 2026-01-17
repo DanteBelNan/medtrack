@@ -5,18 +5,19 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
+@Table(name = "app_user")
 @Data
-public class Usuario {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;
+    private String name;
 
     @Column(unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Remedio> remedios;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Medicine> medicines;
 }

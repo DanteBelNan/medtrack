@@ -1,26 +1,26 @@
 package com.medtrack.controller;
 
 import com.medtrack.model.Medicine;
-import com.medtrack.repository.RemedioRepository;
+import com.medtrack.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/remedios")
-public class RemedioController {
+@RequestMapping("/api/medicines")
+public class MedicineController {
 
     @Autowired
-    private RemedioRepository repository;
+    private MedicineRepository repository;
 
     @GetMapping
-    public List<Medicine> listar() {
+    public List<Medicine> list() {
         return repository.findAll();
     }
 
     @PostMapping
-    public Medicine crear(@RequestBody Medicine medicine) {
+    public Medicine create(@RequestBody Medicine medicine) {
         return repository.save(medicine);
     }
 }
