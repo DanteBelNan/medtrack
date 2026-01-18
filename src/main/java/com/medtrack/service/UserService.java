@@ -18,10 +18,10 @@ public class UserService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
-        this.passwordEncoder = new BCryptPasswordEncoder(); // Instancia para hashear
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserDTO register(UserRegistrationDTO registrationDto) {

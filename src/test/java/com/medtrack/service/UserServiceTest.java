@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,6 +25,9 @@ class UserServiceTest {
 
     @Spy
     private UserMapper userMapper;
+
+    @Spy
+    private BCryptPasswordEncoder passwordEncoder;
 
     @InjectMocks
     private UserService userService;
