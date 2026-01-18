@@ -3,6 +3,7 @@ package com.medtrack.service;
 import com.medtrack.dto.UserDTO;
 import com.medtrack.dto.UserRegistrationDTO;
 import com.medtrack.mapper.UserMapper;
+import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +29,7 @@ public class UserService {
         User user = userMapper.toEntity(registrationDto);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
 
         User savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);

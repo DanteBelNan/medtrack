@@ -1,5 +1,6 @@
 package com.medtrack.service;
 
+import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ class UserDetailsServiceImplTest {
         User user = new User();
         user.setEmail("johndoe@email.com");
         user.setPassword("encoded_password");
+        user.setRole(Role.USER);
 
         when(userRepository.findByEmail("johndoe@email.com")).thenReturn(Optional.of(user));
 

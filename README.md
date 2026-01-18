@@ -227,3 +227,39 @@ Este proyecto deployara en AWS usando:
 ---
 
 **Estado del Proyecto**: 🚧 En Desarrollo (POC)
+
+
+    @Test
+    void shouldReturnAllMedicines() throws Exception {
+        Medicine m1 = new Medicine();
+        m1.setName("Ibuprofeno");
+        m1.setDosage("600mg");
+
+        Medicine m2 = new Medicine();
+        m2.setName("Aspirina");
+        m2.setDosage("100mg");
+
+        medicineRepository.save(m1);
+        medicineRepository.save(m2);
+
+        mockMvc.perform(get("/api/medicines/all")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].name").value("Ibuprofeno"))
+                .andExpect(jsonPath("$[1].name").value("Aspirina"));
+    }
+
+    @Test
+    void shouldReturnMedicinesByUserIdWithAuth() throws Exception {
+        Medicine med = new Medicine();
+        med.setName("Loratadina");
+        med.setUser(testUser);
+        medicineRepository.save(med);
+
+        mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name").value("Loratadina"));
+    }

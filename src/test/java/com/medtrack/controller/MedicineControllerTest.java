@@ -30,21 +30,19 @@ class MedicineControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private MedicineRepository medicineRepository;
-
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String token;
+    private String userToken;
+    private String adminToken;
     private User testUser;
+    private User adminUser;
 
     @BeforeEach
     void setup() throws Exception {
@@ -56,12 +54,22 @@ class MedicineControllerTest {
         reg.setEmail("johndoe@email.com");
         reg.setPassword("password123");
         userService.register(reg);
-
         testUser = userRepository.findByEmail("johndoe@email.com").orElseThrow();
+        userToken = loginAndGetToken("johndoe@email.com", "password123");
 
+        User admin = new User();
+        admin.setName("Admin User");
+        admin.setEmail("admin@medtrack.com");
+        admin.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("admin123"));
+        admin.setRole(com.medtrack.model.Role.ADMIN);
+        adminUser = userRepository.save(admin);
+        adminToken = loginAndGetToken("admin@medtrack.com", "admin123");
+    }
+
+    private String loginAndGetToken(String email, String password) throws Exception {
         LoginRequestDTO login = new LoginRequestDTO();
-        login.setEmail("johndoe@email.com");
-        login.setPassword("password123");
+        login.setEmail(email);
+        login.setPassword(password);
 
         String response = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -69,28 +77,33 @@ class MedicineControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        this.token = objectMapper.readTree(response).get("token").asText();
+        return objectMapper.readTree(response).get("token").asText();
     }
 
     @Test
-    void shouldReturnAllMedicines() throws Exception {
-        Medicine m1 = new Medicine();
-        m1.setName("Ibuprofeno");
-        m1.setDosage("600mg");
-
-        Medicine m2 = new Medicine();
-        m2.setName("Aspirina");
-        m2.setDosage("100mg");
-
-        medicineRepository.save(m1);
-        medicineRepository.save(m2);
-
+    void adminShouldAccessAllMedicines() throws Exception {
         mockMvc.perform(get("/api/medicines/all")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].name").value("Ibuprofeno"))
-                .andExpect(jsonPath("$[1].name").value("Aspirina"));
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void adminShouldAccessSpecificUserMedicines() throws Exception {
+        mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
+                        .header("Authorization", "Bearer " + adminToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void userShouldBeForbiddenFromAdminEndpoints() throws Exception {
+        mockMvc.perform(get("/api/medicines/all")
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("Access Denied"));
+
+        mockMvc.perform(get("/api/medicines/user/" + adminUser.getId())
+                        .header("Authorization", "Bearer " + userToken))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -103,7 +116,7 @@ class MedicineControllerTest {
     """;
 
         mockMvc.perform(post("/api/medicines")
-                        .header("Authorization", "Bearer " + token)
+                        .header("Authorization", "Bearer " + userToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(medicineJson))
                 .andExpect(status().isOk())
@@ -120,7 +133,7 @@ class MedicineControllerTest {
         medicineRepository.save(m1);
 
         mockMvc.perform(get("/api/medicines/my")
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Ibuprofeno"));
@@ -135,7 +148,7 @@ class MedicineControllerTest {
         med = medicineRepository.save(med);
 
         mockMvc.perform(get("/api/medicines/" + med.getId())
-                        .header("Authorization", "Bearer " + token))
+                        .header("Authorization", "Bearer " + userToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Enalapril"))
                 .andExpect(jsonPath("$.dosage").value("5mg"));
@@ -145,19 +158,5 @@ class MedicineControllerTest {
     void shouldReturn401WhenNoTokenProvided() throws Exception {
         mockMvc.perform(get("/api/medicines"))
                 .andExpect(status().isForbidden());
-    }
-
-    @Test
-    void shouldReturnMedicinesByUserIdWithAuth() throws Exception {
-        Medicine med = new Medicine();
-        med.setName("Loratadina");
-        med.setUser(testUser);
-        medicineRepository.save(med);
-
-        mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Loratadina"));
     }
 }

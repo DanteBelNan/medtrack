@@ -2,6 +2,7 @@ package com.medtrack.service;
 
 import com.medtrack.dto.AuthResponseDTO;
 import com.medtrack.dto.LoginRequestDTO;
+import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,15 +51,19 @@ class AuthServiceTest {
 
     @Test
     void shouldLoginSuccessfullyWhenCredentialsAreCorrect() {
+        testUser.setRole(Role.USER);
+
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches("raw_password", "hashed_password")).thenReturn(true);
-        when(jwtService.generateToken(anyString())).thenReturn("mocked_jwt_token");
+
+        when(jwtService.generateToken(anyMap(), anyString())).thenReturn("mocked_jwt_token");
 
         AuthResponseDTO response = authService.login(loginRequest);
 
         assertThat(response).isNotNull();
         assertThat(response.getToken()).isEqualTo("mocked_jwt_token");
-        verify(jwtService).generateToken("johndoe@email.com");
+
+        verify(jwtService).generateToken(anyMap(), eq("johndoe@email.com"));
     }
 
     @Test

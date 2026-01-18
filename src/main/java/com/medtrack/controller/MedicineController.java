@@ -3,6 +3,7 @@ package com.medtrack.controller;
 import com.medtrack.dto.MedicineDTO;
 import com.medtrack.service.MedicineService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,21 +16,25 @@ public class MedicineController {
     private MedicineService medicineService;
 
     @GetMapping("/all")
-    public List<MedicineDTO> listAll() { //TODO: This endpoint should be only allowed for specific roles
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<MedicineDTO> listAll() {
         return medicineService.findAll();
     }
 
     @GetMapping("/user/{userId}")
-    public List<MedicineDTO> byUserId(@PathVariable Long userId) { // TODO: Another endpoint for admin role
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<MedicineDTO> byUserId(@PathVariable Long userId) {
         return medicineService.findByUserId(userId);
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public MedicineDTO create(@RequestBody MedicineDTO medicineDTO) {
         return medicineService.save(medicineDTO);
     }
 
     @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public List<MedicineDTO> getMyMedicines() {
         return medicineService.findMyMedicines();
     }

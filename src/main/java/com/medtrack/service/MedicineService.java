@@ -3,6 +3,7 @@ package com.medtrack.service;
 import com.medtrack.dto.MedicineDTO;
 import com.medtrack.mapper.MedicineMapper;
 import com.medtrack.model.Medicine;
+import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.MedicineRepository;
 import com.medtrack.repository.UserRepository;
@@ -50,7 +51,7 @@ public class MedicineService {
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
 
         User currentUser = getAuthenticatedUser();
-        if (!medicine.getUser().getId().equals(currentUser.getId())) {
+        if (!medicine.getUser().getId().equals(currentUser.getId()) && currentUser.getRole() == Role.USER) {
             throw new RuntimeException("Unauthorized access to this medicine");
         }
 
