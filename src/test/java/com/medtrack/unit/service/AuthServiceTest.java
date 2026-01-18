@@ -1,10 +1,13 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
 import com.medtrack.dto.AuthResponseDTO;
 import com.medtrack.dto.LoginRequestDTO;
 import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
+import com.medtrack.service.AuthService;
+import com.medtrack.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
+class AuthServiceTest extends UnitTestBase {
 
     @Mock
     private UserRepository userRepository;

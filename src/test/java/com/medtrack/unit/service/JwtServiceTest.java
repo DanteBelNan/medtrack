@@ -1,5 +1,7 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
+import com.medtrack.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -8,7 +10,7 @@ import java.util.Base64;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JwtServiceTest {
+class JwtServiceTest extends UnitTestBase {
 
     private JwtService jwtService;
 

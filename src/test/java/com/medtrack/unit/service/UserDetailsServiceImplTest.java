@@ -1,8 +1,10 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
 import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
+import com.medtrack.service.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserDetailsServiceImplTest {
+class UserDetailsServiceImplTest extends UnitTestBase {
 
     @Mock
     private UserRepository userRepository;

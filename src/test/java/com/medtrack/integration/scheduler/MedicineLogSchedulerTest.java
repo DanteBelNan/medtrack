@@ -1,18 +1,19 @@
-package com.medtrack.scheduler;
+package com.medtrack.integration.scheduler;
 
+import com.medtrack.IntegrationTestBase;
 import com.medtrack.model.Medicine;
 import com.medtrack.model.User;
 import com.medtrack.model.MedicineLog;
 import com.medtrack.repository.MedicineLogRepository;
 import com.medtrack.repository.MedicineRepository;
 import com.medtrack.repository.UserRepository;
+import com.medtrack.scheduler.MedicineLogScheduler;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class MedicineLogSchedulerTest {
+class MedicineLogSchedulerTest extends IntegrationTestBase {
 
     @Autowired
     private MedicineLogScheduler scheduler;
@@ -38,9 +39,9 @@ class MedicineLogSchedulerTest {
 
     @BeforeEach
     void setup() {
-        logRepository.deleteAll();
-        medicineRepository.deleteAll();
-        userRepository.deleteAll();
+        logRepository.deleteAllInBatch();
+        medicineRepository.deleteAllInBatch();
+        userRepository.deleteAllInBatch();
     }
 
     @Test
@@ -48,7 +49,7 @@ class MedicineLogSchedulerTest {
         // Arrange
         User user = new User();
         user.setName("John Doe");
-        user.setEmail("johndoe@email.com");
+        user.setEmail("johndoe" + System.currentTimeMillis() + "@email.com");
         user.setPassword("encoded_pass");
         user = userRepository.save(user);
 

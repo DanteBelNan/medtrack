@@ -1,8 +1,10 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
 import com.medtrack.model.Medicine;
 import com.medtrack.model.MedicineLog;
 import com.medtrack.repository.MedicineLogRepository;
+import com.medtrack.service.MedicineLogService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +19,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-class MedicineLogServiceTest {
+class MedicineLogServiceTest extends UnitTestBase {
 
     @Mock
     private MedicineLogRepository logRepository;

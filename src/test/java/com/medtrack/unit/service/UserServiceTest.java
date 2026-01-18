@@ -1,10 +1,12 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
 import com.medtrack.dto.UserDTO;
 import com.medtrack.dto.UserRegistrationDTO;
 import com.medtrack.mapper.UserMapper;
 import com.medtrack.model.User;
 import com.medtrack.repository.UserRepository;
+import com.medtrack.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceTest {
+class UserServiceTest extends UnitTestBase {
 
     @Mock
     private UserRepository userRepository;

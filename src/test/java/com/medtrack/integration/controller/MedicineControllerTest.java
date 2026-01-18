@@ -1,5 +1,6 @@
-package com.medtrack.controller;
+package com.medtrack.integration.controller;
 
+import com.medtrack.IntegrationTestBase;
 import com.medtrack.dto.LoginRequestDTO;
 import com.medtrack.dto.UserRegistrationDTO;
 import com.medtrack.model.Medicine;
@@ -26,7 +27,7 @@ import static org.hamcrest.Matchers.hasSize;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-class MedicineControllerTest {
+class MedicineControllerTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;

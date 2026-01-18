@@ -1,5 +1,6 @@
-package com.medtrack.service;
+package com.medtrack.unit.service;
 
+import com.medtrack.UnitTestBase;
 import com.medtrack.dto.MedicineDTO;
 import com.medtrack.mapper.MedicineMapper;
 import com.medtrack.model.Medicine;
@@ -7,6 +8,7 @@ import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.MedicineRepository;
 import com.medtrack.repository.UserRepository;
+import com.medtrack.service.MedicineService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class MedicineServiceTest {
+class MedicineServiceTest extends UnitTestBase {
 
     @Mock
     private MedicineRepository medicineRepository;

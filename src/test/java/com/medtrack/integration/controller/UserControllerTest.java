@@ -1,5 +1,6 @@
-package com.medtrack.controller;
+package com.medtrack.integration.controller;
 
+import com.medtrack.IntegrationTestBase;
 import com.medtrack.dto.UserRegistrationDTO;
 import com.medtrack.repository.UserRepository;
 import com.medtrack.repository.MedicineRepository;
@@ -21,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc(addFilters = false) //PENDING, REMOVE THIS LINE AND MAKE IT WORK
-class UserControllerTest {
+class UserControllerTest extends IntegrationTestBase {
 
     @Autowired
     private MockMvc mockMvc;
