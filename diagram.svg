@@ -1,0 +1,164 @@
+<svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+    <!-- Definitions -->
+    <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+            <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+        </marker>
+
+        <filter id="shadow">
+            <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+        </filter>
+    </defs>
+
+    <!-- Background -->
+    <rect width="1200" height="900" fill="#f8f9fa"/>
+
+    <!-- Title -->
+    <text x="600" y="40" font-size="28" font-weight="bold" text-anchor="middle" fill="#1a1a1a">
+        MedTrack - Arquitectura del Sistema
+    </text>
+
+    <!-- Layer Labels -->
+    <text x="50" y="100" font-size="14" font-weight="bold" fill="#666">Capa de Presentación</text>
+    <text x="50" y="300" font-size="14" font-weight="bold" fill="#666">Capa de Aplicación</text>
+    <text x="50" y="570" font-size="14" font-weight="bold" fill="#666">Capa de Infraestructura</text>
+
+    <!-- ===== PRESENTATION LAYER ===== -->
+
+    <!-- Vue Web Frontend -->
+    <rect x="200" y="120" width="180" height="120" rx="8" fill="#42b883" filter="url(#shadow)"/>
+    <text x="290" y="155" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Vue 3 Web</text>
+    <text x="290" y="180" font-size="12" text-anchor="middle" fill="white">Frontend</text>
+    <text x="290" y="200" font-size="10" text-anchor="middle" fill="#e8f5e9">• Gestión de remedios</text>
+    <text x="290" y="215" font-size="10" text-anchor="middle" fill="#e8f5e9">• Horarios</text>
+    <text x="290" y="230" font-size="10" text-anchor="middle" fill="#e8f5e9">• Confirmaciones</text>
+
+    <!-- Kotlin Mobile -->
+    <rect x="420" y="120" width="180" height="120" rx="8" fill="#7F52FF" filter="url(#shadow)"/>
+    <text x="510" y="155" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Kotlin Mobile</text>
+    <text x="510" y="180" font-size="12" text-anchor="middle" fill="white">Android App</text>
+    <text x="510" y="200" font-size="10" text-anchor="middle" fill="#e8eaf6">• App móvil</text>
+    <text x="510" y="215" font-size="10" text-anchor="middle" fill="#e8eaf6">• Notificaciones push</text>
+    <text x="510" y="230" font-size="10" text-anchor="middle" fill="#e8eaf6">• Confirmaciones</text>
+
+    <!-- Vue Admin Dashboard -->
+    <rect x="640" y="120" width="180" height="120" rx="8" fill="#35495e" filter="url(#shadow)"/>
+    <text x="730" y="155" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Vue 3 Admin</text>
+    <text x="730" y="180" font-size="12" text-anchor="middle" fill="white">Dashboard</text>
+    <text x="730" y="200" font-size="10" text-anchor="middle" fill="#cfd8dc">• Estadísticas</text>
+    <text x="730" y="215" font-size="10" text-anchor="middle" fill="#cfd8dc">• Analytics</text>
+    <text x="730" y="230" font-size="10" text-anchor="middle" fill="#cfd8dc">• Roles/permisos</text>
+
+    <!-- ===== APPLICATION LAYER ===== -->
+
+    <!-- Java Backend -->
+    <rect x="200" y="320" width="280" height="180" rx="8" fill="#f89820" filter="url(#shadow)"/>
+    <text x="340" y="355" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Java Spring Boot</text>
+    <text x="340" y="380" font-size="14" text-anchor="middle" fill="white">Backend API</text>
+    <text x="340" y="405" font-size="11" text-anchor="middle" fill="#fff8e1">• Autenticación JWT</text>
+    <text x="340" y="425" font-size="11" text-anchor="middle" fill="#fff8e1">• CRUD de medicamentos</text>
+    <text x="340" y="445" font-size="11" text-anchor="middle" fill="#fff8e1">• Cálculo de horarios</text>
+    <text x="340" y="465" font-size="11" text-anchor="middle" fill="#fff8e1">• Encolar notificaciones (SQS)</text>
+    <text x="340" y="485" font-size="11" text-anchor="middle" fill="#fff8e1">• REST API endpoints</text>
+
+    <!-- Go Notification Service -->
+    <rect x="540" y="320" width="280" height="180" rx="8" fill="#00ADD8" filter="url(#shadow)"/>
+    <text x="680" y="355" font-size="18" font-weight="bold" text-anchor="middle" fill="white">Go Service</text>
+    <text x="680" y="380" font-size="14" text-anchor="middle" fill="white">Notificaciones</text>
+    <text x="680" y="405" font-size="11" text-anchor="middle" fill="#e1f5fe">• Cron job (query DB)</text>
+    <text x="680" y="425" font-size="11" text-anchor="middle" fill="#e1f5fe">• Consumir SQS</text>
+    <text x="680" y="445" font-size="11" text-anchor="middle" fill="#e1f5fe">• Envío Email/Telegram</text>
+    <text x="680" y="465" font-size="11" text-anchor="middle" fill="#e1f5fe">• Lógica de reintentos</text>
+    <text x="680" y="485" font-size="11" text-anchor="middle" fill="#e1f5fe">• Dead Letter Queue</text>
+
+    <!-- ===== INFRASTRUCTURE LAYER ===== -->
+
+    <!-- PostgreSQL -->
+    <rect x="150" y="600" width="150" height="100" rx="8" fill="#336791" filter="url(#shadow)"/>
+    <text x="225" y="635" font-size="16" font-weight="bold" text-anchor="middle" fill="white">PostgreSQL</text>
+    <text x="225" y="660" font-size="11" text-anchor="middle" fill="#e3f2fd">• Users</text>
+    <text x="225" y="678" font-size="11" text-anchor="middle" fill="#e3f2fd">• Medications</text>
+    <text x="225" y="696" font-size="11" text-anchor="middle" fill="#e3f2fd">• Logs</text>
+
+    <!-- Redis -->
+    <rect x="330" y="600" width="150" height="100" rx="8" fill="#DC382D" filter="url(#shadow)"/>
+    <text x="405" y="635" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Redis</text>
+    <text x="405" y="660" font-size="11" text-anchor="middle" fill="#ffebee">• Cache sesiones</text>
+    <text x="405" y="678" font-size="11" text-anchor="middle" fill="#ffebee">• Rate limiting</text>
+    <text x="405" y="696" font-size="11" text-anchor="middle" fill="#ffebee">• Query cache</text>
+
+    <!-- SQS -->
+    <rect x="510" y="600" width="150" height="100" rx="8" fill="#FF9900" filter="url(#shadow)"/>
+    <text x="585" y="635" font-size="16" font-weight="bold" text-anchor="middle" fill="white">SQS</text>
+    <text x="585" y="655" font-size="11" text-anchor="middle" fill="#fff3e0">LocalStack (dev)</text>
+    <text x="585" y="673" font-size="11" text-anchor="middle" fill="#fff3e0">AWS (prod)</text>
+    <text x="585" y="691" font-size="11" text-anchor="middle" fill="#fff3e0">• Message Queue</text>
+
+    <!-- SMTP -->
+    <rect x="690" y="600" width="150" height="100" rx="8" fill="#EA4335" filter="url(#shadow)"/>
+    <text x="765" y="635" font-size="16" font-weight="bold" text-anchor="middle" fill="white">SMTP</text>
+    <text x="765" y="655" font-size="11" text-anchor="middle" fill="#ffebee">MailHog (dev)</text>
+    <text x="765" y="673" font-size="11" text-anchor="middle" fill="#ffebee">Mailcow (prod)</text>
+    <text x="765" y="691" font-size="11" text-anchor="middle" fill="#ffebee">• Email envío</text>
+
+    <!-- Telegram -->
+    <rect x="870" y="600" width="150" height="100" rx="8" fill="#0088cc" filter="url(#shadow)"/>
+    <text x="945" y="635" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Telegram</text>
+    <text x="945" y="655" font-size="11" text-anchor="middle" fill="#e1f5fe">Bot API</text>
+    <text x="945" y="673" font-size="11" text-anchor="middle" fill="#e1f5fe">• Notificaciones</text>
+    <text x="945" y="691" font-size="11" text-anchor="middle" fill="#e1f5fe">• Inline buttons</text>
+
+    <!-- ===== ARROWS ===== -->
+
+    <!-- Presentation to Backend -->
+    <path d="M 290 240 L 290 320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="295" y="280" font-size="10" fill="#666">REST</text>
+
+    <path d="M 510 240 L 380 320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="445" y="280" font-size="10" fill="#666">REST</text>
+
+    <path d="M 730 240 L 420 320" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="575" y="280" font-size="10" fill="#666">REST</text>
+
+    <!-- Backend to Infrastructure -->
+    <path d="M 270 500 L 225 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="240" y="550" font-size="10" fill="#666">R/W</text>
+
+    <path d="M 340 500 L 405 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="365" y="550" font-size="10" fill="#666">Cache</text>
+
+    <path d="M 410 500 L 550 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="475" y="550" font-size="10" fill="#666">Enqueue</text>
+
+    <!-- Go Service to Infrastructure -->
+    <path d="M 600 500 L 300 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="450" y="560" font-size="10" fill="#666">Query</text>
+
+    <path d="M 650 500 L 585 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="610" y="550" font-size="10" fill="#666">Consume</text>
+
+    <path d="M 700 500 L 730 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="708" y="550" font-size="10" fill="#666">Send</text>
+
+    <path d="M 760 500 L 910 600" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="830" y="550" font-size="10" fill="#666">Send</text>
+
+    <!-- Bidirectional arrow between Backend and Go -->
+    <path d="M 480 380 L 540 380" stroke="#4CAF50" stroke-width="3" marker-end="url(#arrowhead)" fill="none"/>
+    <path d="M 540 420 L 480 420" stroke="#4CAF50" stroke-width="3" marker-end="url(#arrowhead)" fill="none"/>
+    <text x="510" y="370" font-size="10" fill="#4CAF50" text-anchor="middle">Shared DB/Redis</text>
+
+    <!-- Legend -->
+    <rect x="900" y="780" width="250" height="90" rx="5" fill="white" stroke="#ddd" stroke-width="1"/>
+    <text x="1025" y="805" font-size="12" font-weight="bold" text-anchor="middle">Leyenda</text>
+    <line x1="915" y1="820" x2="945" y2="820" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <text x="955" y="825" font-size="10">Flujo de datos</text>
+    <line x1="915" y1="840" x2="945" y2="840" stroke="#4CAF50" stroke-width="3"/>
+    <text x="955" y="845" font-size="10">Recursos compartidos</text>
+    <text x="915" y="865" font-size="9" fill="#666">Todas las conexiones son agnósticas</text>
+
+    <!-- Footer note -->
+    <text x="600" y="870" font-size="11" text-anchor="middle" fill="#888" font-style="italic">
+        Infraestructura configurable: LocalStack/MailHog (dev) | AWS/Mailcow (prod)
+    </text>
+</svg>
