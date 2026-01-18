@@ -367,20 +367,6 @@ spring.datasource.url=jdbc:postgresql://rds-endpoint:5432/medtrack
 - Redis se usa para cache de sesiones y rate limiting
 - SQS desacopla el envío de notificaciones del flujo principal
 
-## 🤝 Contribuir
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más detalles.
-
 ---
 
 **Estado del Proyecto**: 🚧 En Desarrollo (MVP)
@@ -390,7 +376,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE para más deta
 - [x] CRUD de medicamentos
 - [x] Integración con PostgreSQL
 - [ ] Integración con Redis
-- [ ] Integración con SQS
+- [X] Integración con SQS
 - [ ] Servicio de notificaciones en Go
 - [ ] Notificaciones por Email
 - [ ] Notificaciones por Telegram

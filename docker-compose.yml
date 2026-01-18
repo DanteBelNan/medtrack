@@ -18,6 +18,19 @@ services:
       timeout: 5s
       retries: 5
 
+  localstack:
+    image: localstack/localstack:latest
+    container_name: medtrack-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=us-east-1
+    volumes:
+      - "./aws-setup:/etc/localstack/init/ready.d"
+    networks:
+      - medtrack-network
+
 networks:
   medtrack-network:
     driver: bridge

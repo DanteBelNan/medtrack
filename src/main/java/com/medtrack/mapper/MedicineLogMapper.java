@@ -12,6 +12,7 @@ public class MedicineLogMapper {
         dto.setId(log.getId());
         dto.setMedicineId(log.getMedicine().getId());
         dto.setMedicineName(log.getMedicine().getName());
+        dto.setDosage(log.getMedicine().getDosage());
         dto.setUserId(log.getUser().getId());
         dto.setScheduledTime(log.getScheduledTime());
         dto.setTakenAt(log.getTakenAt());
