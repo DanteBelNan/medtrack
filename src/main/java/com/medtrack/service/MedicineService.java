@@ -1,15 +1,16 @@
 package com.medtrack.service;
 
+import com.medtrack.dto.MedicineDTO;
+import com.medtrack.mapper.MedicineMapper;
 import com.medtrack.model.Medicine;
 import com.medtrack.model.User;
 import com.medtrack.repository.MedicineRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.medtrack.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import com.medtrack.dto.MedicineDTO;
-import com.medtrack.mapper.MedicineMapper;
-import com.medtrack.repository.UserRepository;
 
 @Service
 public class MedicineService {
@@ -26,33 +27,48 @@ public class MedicineService {
         this.medicineMapper = medicineMapper;
     }
 
+    private User getAuthenticatedUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+    }
+
     public List<MedicineDTO> findAll() {
         return medicineRepository.findAll().stream()
                 .map(medicineMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public MedicineDTO findById(Long id) {
-        return medicineRepository.findById(id)
+    public List<MedicineDTO> findByUserId(Long userId) {
+        return medicineRepository.findByUserId(userId).stream()
                 .map(medicineMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    public MedicineDTO findById(Long id) {
+        Medicine medicine = medicineRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Medicine not found"));
+
+        User currentUser = getAuthenticatedUser();
+        if (!medicine.getUser().getId().equals(currentUser.getId())) {
+            throw new RuntimeException("Unauthorized access to this medicine");
+        }
+
+        return medicineMapper.toDTO(medicine);
     }
 
     public MedicineDTO save(MedicineDTO medicineDTO) {
         Medicine medicine = medicineMapper.toEntity(medicineDTO);
 
-        if (medicineDTO.getUserId() != null) {
-            User user = userRepository.findById(medicineDTO.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            medicine.setUser(user);
-        }
+        medicine.setUser(getAuthenticatedUser());
 
         Medicine savedMedicine = medicineRepository.save(medicine);
         return medicineMapper.toDTO(savedMedicine);
     }
 
-    public List<MedicineDTO> findByUserId(Long userId) {
-        return medicineRepository.findByUserId(userId).stream()
+    public List<MedicineDTO> findMyMedicines() {
+        User user = getAuthenticatedUser();
+        return medicineRepository.findByUserId(user.getId()).stream()
                 .map(medicineMapper::toDTO)
                 .collect(Collectors.toList());
     }

@@ -35,12 +35,22 @@ class MedicineServiceTest {
     @InjectMocks
     private MedicineService medicineService;
 
+    private void mockSecurityContext(User user) {
+        org.springframework.security.core.Authentication auth =
+                new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                        user.getEmail(), null, java.util.Collections.emptyList()
+                );
+        org.springframework.security.core.context.SecurityContext context =
+                org.springframework.security.core.context.SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        org.springframework.security.core.context.SecurityContextHolder.setContext(context);
+    }
+
     @Test
     void shouldReturnMedicinesWhenUserExists() {
         Long userId = 1L;
         Medicine med1 = new Medicine();
         med1.setName("Ibuprofeno");
-
         Medicine med2 = new Medicine();
         med2.setName("Aspirina");
 
@@ -52,50 +62,63 @@ class MedicineServiceTest {
                 .hasSize(2)
                 .extracting(MedicineDTO::getName)
                 .containsExactly("Ibuprofeno", "Aspirina");
-        verify(medicineRepository, times(1)).findByUserId(userId);
+        verify(medicineRepository).findByUserId(userId);
+    }
+
+    @Test
+    void shouldReturnMyMedicines() {
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("johndoe@email.com");
+        mockSecurityContext(user);
+
+        when(userRepository.findByEmail("johndoe@email.com")).thenReturn(java.util.Optional.of(user));
+        when(medicineRepository.findByUserId(1L)).thenReturn(Arrays.asList(new Medicine()));
+
+        List<MedicineDTO> result = medicineService.findMyMedicines();
+
+        assertThat(result).hasSize(1);
+        verify(medicineRepository).findByUserId(1L);
     }
 
     @Test
     void shouldSaveMedicineCorrectly() {
-        Long userId = 1L;
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("johndoe@email.com");
+
+        mockSecurityContext(user);
+
         MedicineDTO medicineDto = new MedicineDTO();
         medicineDto.setName("Paracetamol");
-        medicineDto.setUserId(userId);
-
-        User user = new com.medtrack.model.User();
-        user.setId(userId);
 
         Medicine savedMedicine = new Medicine();
         savedMedicine.setId(10L);
         savedMedicine.setName("Paracetamol");
         savedMedicine.setUser(user);
 
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.of(user));
+        when(userRepository.findByEmail("johndoe@email.com")).thenReturn(java.util.Optional.of(user));
         when(medicineRepository.save(any(Medicine.class))).thenReturn(savedMedicine);
 
         MedicineDTO result = medicineService.save(medicineDto);
 
-        assertThat(result)
-                .isNotNull()
-                .hasFieldOrPropertyWithValue("id", 10L)
-                .hasFieldOrPropertyWithValue("userId", userId);
-
-        verify(userRepository).findById(userId);
-        verify(medicineRepository).save(any(Medicine.class));
+        assertThat(result).isNotNull();
+        assertThat(result.getUserId()).isEqualTo(1L);
+        verify(userRepository).findByEmail("johndoe@email.com");
     }
-
     @Test
     void shouldThrowExceptionWhenUserDoesNotExist() {
-        Long userId = 99L;
+        User user = new User();
+        user.setEmail("johndoe@email.com");
+        mockSecurityContext(user);
         MedicineDTO medicineDto = new MedicineDTO();
-        medicineDto.setUserId(userId);
         medicineDto.setName("Loratadina");
 
-        when(userRepository.findById(userId)).thenReturn(java.util.Optional.empty());
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(java.util.Optional.empty());
 
         assertThatThrownBy(() -> medicineService.save(medicineDto))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("User not found");
+                .hasMessage("Authenticated user not found");
 
         verify(medicineRepository, never()).save(any(Medicine.class));
     }
@@ -113,11 +136,18 @@ class MedicineServiceTest {
     @Test
     void shouldReturnMedicineWhenIdExists() {
         Long medId = 10L;
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("johndoe@email.com");
+        mockSecurityContext(user);
+
         Medicine med = new Medicine();
         med.setId(medId);
         med.setName("Ibupirac");
+        med.setUser(user);
 
         when(medicineRepository.findById(medId)).thenReturn(java.util.Optional.of(med));
+        when(userRepository.findByEmail("johndoe@email.com")).thenReturn(java.util.Optional.of(user));
 
         MedicineDTO result = medicineService.findById(medId);
 

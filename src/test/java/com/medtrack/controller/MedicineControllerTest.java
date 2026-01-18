@@ -48,7 +48,6 @@ class MedicineControllerTest {
 
     @BeforeEach
     void setup() throws Exception {
-        // Limpiar base de datos
         medicineRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -86,7 +85,7 @@ class MedicineControllerTest {
         medicineRepository.save(m1);
         medicineRepository.save(m2);
 
-        mockMvc.perform(get("/api/medicines")
+        mockMvc.perform(get("/api/medicines/all")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -95,14 +94,13 @@ class MedicineControllerTest {
     }
 
     @Test
-    void shouldCreateMedicineWithUser() throws Exception {
+    void shouldCreateMedicineUsingTokenIdentity() throws Exception {
         String medicineJson = """
-        {
-          "name": "Ibuprofeno",
-          "dosage": "600mg",
-          "userId": %d
-        }
-        """.formatted(testUser.getId());
+    {
+      "name": "Ibuprofeno",
+      "dosage": "600mg"
+    }
+    """;
 
         mockMvc.perform(post("/api/medicines")
                         .header("Authorization", "Bearer " + token)
@@ -114,19 +112,18 @@ class MedicineControllerTest {
     }
 
     @Test
-    void shouldReturnMedicinesByUserId() throws Exception {
-        Medicine med = new Medicine();
-        med.setName("Loratadina");
-        med.setDosage("10mg");
-        med.setUser(testUser);
-        medicineRepository.save(med);
+    void shouldReturnMyMedicines() throws Exception {
+        Medicine m1 = new Medicine();
+        m1.setName("Ibuprofeno");
+        m1.setUser(testUser);
 
-        mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
+        medicineRepository.save(m1);
+
+        mockMvc.perform(get("/api/medicines/my")
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value("Loratadina"))
-                .andExpect(jsonPath("$[0].userId").value(testUser.getId().intValue()));
+                .andExpect(jsonPath("$[0].name").value("Ibuprofeno"));
     }
 
     @Test
@@ -134,6 +131,7 @@ class MedicineControllerTest {
         Medicine med = new Medicine();
         med.setName("Enalapril");
         med.setDosage("5mg");
+        med.setUser(testUser);
         med = medicineRepository.save(med);
 
         mockMvc.perform(get("/api/medicines/" + med.getId())
@@ -147,5 +145,19 @@ class MedicineControllerTest {
     void shouldReturn401WhenNoTokenProvided() throws Exception {
         mockMvc.perform(get("/api/medicines"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void shouldReturnMedicinesByUserIdWithAuth() throws Exception {
+        Medicine med = new Medicine();
+        med.setName("Loratadina");
+        med.setUser(testUser);
+        medicineRepository.save(med);
+
+        mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
+                        .header("Authorization", "Bearer " + token)) // Usamos el token de John Doe
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].name").value("Loratadina"));
     }
 }

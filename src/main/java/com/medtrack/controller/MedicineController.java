@@ -14,9 +14,14 @@ public class MedicineController {
     @Autowired
     private MedicineService medicineService;
 
-    @GetMapping
-    public List<MedicineDTO> list() {
+    @GetMapping("/all")
+    public List<MedicineDTO> listAll() { //TODO: This endpoint should be only allowed for specific roles
         return medicineService.findAll();
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<MedicineDTO> byUserId(@PathVariable Long userId) { // TODO: Another endpoint for admin role
+        return medicineService.findByUserId(userId);
     }
 
     @PostMapping
@@ -24,9 +29,9 @@ public class MedicineController {
         return medicineService.save(medicineDTO);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<MedicineDTO> byUserId(@PathVariable Long userId){
-        return medicineService.findByUserId(userId);
+    @GetMapping("/my")
+    public List<MedicineDTO> getMyMedicines() {
+        return medicineService.findMyMedicines();
     }
 
     @GetMapping("/{id}")
