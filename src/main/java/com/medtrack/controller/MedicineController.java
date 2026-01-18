@@ -39,6 +39,7 @@ public class MedicineController {
         return medicineService.findMyMedicines();
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/{id}")
     public MedicineDTO getById(@PathVariable Long id) {
         return medicineService.findById(id);

@@ -3,9 +3,11 @@ package com.medtrack.service;
 import com.medtrack.dto.MedicineDTO;
 import com.medtrack.mapper.MedicineMapper;
 import com.medtrack.model.Medicine;
+import com.medtrack.model.Role;
 import com.medtrack.model.User;
 import com.medtrack.repository.MedicineRepository;
 import com.medtrack.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +37,11 @@ class MedicineServiceTest {
 
     @InjectMocks
     private MedicineService medicineService;
+
+    @AfterEach
+    void tearDown() {
+        org.springframework.security.core.context.SecurityContextHolder.clearContext();
+    }
 
     private void mockSecurityContext(User user) {
         org.springframework.security.core.Authentication auth =
@@ -86,15 +94,18 @@ class MedicineServiceTest {
         User user = new User();
         user.setId(1L);
         user.setEmail("johndoe@email.com");
-
         mockSecurityContext(user);
 
         MedicineDTO medicineDto = new MedicineDTO();
         medicineDto.setName("Paracetamol");
+        medicineDto.setDaysOfWeek(Arrays.asList("MONDAY", "FRIDAY"));
+        medicineDto.setIntakeTimes(Arrays.asList(LocalTime.of(8, 0), LocalTime.of(20, 0)));
 
         Medicine savedMedicine = new Medicine();
         savedMedicine.setId(10L);
         savedMedicine.setName("Paracetamol");
+        savedMedicine.setDaysOfWeek(medicineDto.getDaysOfWeek());
+        savedMedicine.setIntakeTimes(medicineDto.getIntakeTimes());
         savedMedicine.setUser(user);
 
         when(userRepository.findByEmail("johndoe@email.com")).thenReturn(java.util.Optional.of(user));
@@ -104,8 +115,14 @@ class MedicineServiceTest {
 
         assertThat(result).isNotNull();
         assertThat(result.getUserId()).isEqualTo(1L);
-        verify(userRepository).findByEmail("johndoe@email.com");
+        assertThat(result.getDaysOfWeek()).containsExactly("MONDAY", "FRIDAY");
+        assertThat(result.getIntakeTimes()).hasSize(2);
+        verify(medicineRepository).save(argThat(medicine ->
+                medicine.getDaysOfWeek().contains("MONDAY") &&
+                        medicine.getIntakeTimes().contains(LocalTime.of(8, 0))
+        ));
     }
+
     @Test
     void shouldThrowExceptionWhenUserDoesNotExist() {
         User user = new User();
@@ -138,6 +155,7 @@ class MedicineServiceTest {
         Long medId = 10L;
         User user = new User();
         user.setId(1L);
+        user.setRole(Role.USER);
         user.setEmail("johndoe@email.com");
         mockSecurityContext(user);
 
@@ -145,6 +163,7 @@ class MedicineServiceTest {
         med.setId(medId);
         med.setName("Ibupirac");
         med.setUser(user);
+        med.setDaysOfWeek(Arrays.asList("EVERYDAY"));
 
         when(medicineRepository.findById(medId)).thenReturn(java.util.Optional.of(med));
         when(userRepository.findByEmail("johndoe@email.com")).thenReturn(java.util.Optional.of(user));
@@ -152,7 +171,30 @@ class MedicineServiceTest {
         MedicineDTO result = medicineService.findById(medId);
 
         assertThat(result).isNotNull();
-        assertThat(result.getName()).isEqualTo("Ibupirac");
-        verify(medicineRepository).findById(medId);
+        assertThat(result.getDaysOfWeek()).contains("EVERYDAY");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserAccessesAnotherUsersMedicine() {
+        Long medId = 10L;
+        User owner = new User();
+        owner.setId(1L);
+
+        User intruder = new User();
+        intruder.setId(2L); // Diferente ID
+        intruder.setRole(Role.USER);
+        intruder.setEmail("intruder@email.com");
+        mockSecurityContext(intruder);
+
+        Medicine med = new Medicine();
+        med.setId(medId);
+        med.setUser(owner);
+
+        when(medicineRepository.findById(medId)).thenReturn(java.util.Optional.of(med));
+        when(userRepository.findByEmail("intruder@email.com")).thenReturn(java.util.Optional.of(intruder));
+
+        assertThatThrownBy(() -> medicineService.findById(medId))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Unauthorized access to this medicine");
     }
 }

@@ -1,13 +1,9 @@
 package com.medtrack.mapper;
 
-import com.medtrack.dto.InTakeScheduleDTO;
 import com.medtrack.dto.MedicineDTO;
-import com.medtrack.model.InTakeSchedule;
 import com.medtrack.model.Medicine;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @Component
 public class MedicineMapper {
@@ -21,27 +17,13 @@ public class MedicineMapper {
         dto.setDosage(medicine.getDosage());
         dto.setActive(medicine.isActive());
 
+        dto.setDaysOfWeek(medicine.getDaysOfWeek() != null ? new ArrayList<>(medicine.getDaysOfWeek()) : new ArrayList<>());
+        dto.setIntakeTimes(medicine.getIntakeTimes() != null ? new ArrayList<>(medicine.getIntakeTimes()) : new ArrayList<>());
+
         if (medicine.getUser() != null) {
             dto.setUserId(medicine.getUser().getId());
         }
 
-        if (medicine.getSchedules() != null) {
-            dto.setSchedules(medicine.getSchedules().stream()
-                    .map(this::toScheduleDTO)
-                    .collect(Collectors.toList()));
-        } else {
-            dto.setSchedules(new ArrayList<>());
-        }
-
-        return dto;
-    }
-
-    private InTakeScheduleDTO toScheduleDTO(InTakeSchedule schedule) {
-        if (schedule == null) return null;
-
-        InTakeScheduleDTO dto = new InTakeScheduleDTO();
-        dto.setDayOfWeek(schedule.getDayOfWeek());
-        dto.setIntakeTime(schedule.getIntakeTime());
         return dto;
     }
 
@@ -53,20 +35,9 @@ public class MedicineMapper {
         medicine.setDosage(dto.getDosage());
         medicine.setActive(dto.isActive());
 
-        if (dto.getSchedules() != null) {
-            medicine.setSchedules(dto.getSchedules().stream()
-                    .map(this::toScheduleEntity)
-                    .collect(Collectors.toList()));
-        }
+        medicine.setDaysOfWeek(dto.getDaysOfWeek());
+        medicine.setIntakeTimes(dto.getIntakeTimes());
 
         return medicine;
-    }
-
-    private InTakeSchedule toScheduleEntity(InTakeScheduleDTO dto) {
-        if (dto == null) return null;
-        InTakeSchedule schedule = new InTakeSchedule();
-        schedule.setDayOfWeek(dto.getDayOfWeek());
-        schedule.setIntakeTime(dto.getIntakeTime());
-        return schedule;
     }
 }

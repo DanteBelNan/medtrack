@@ -107,11 +107,13 @@ class MedicineControllerTest {
     }
 
     @Test
-    void shouldCreateMedicineUsingTokenIdentity() throws Exception {
+    void shouldCreateMedicineWithSchedules() throws Exception {
         String medicineJson = """
     {
       "name": "Ibuprofeno",
-      "dosage": "600mg"
+      "dosage": "600mg",
+      "daysOfWeek": ["MONDAY", "WEDNESDAY", "FRIDAY"],
+      "intakeTimes": ["08:00:00", "20:00:00"]
     }
     """;
 
@@ -121,9 +123,11 @@ class MedicineControllerTest {
                         .content(medicineJson))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Ibuprofeno"))
-                .andExpect(jsonPath("$.userId").value(testUser.getId().intValue()));
+                .andExpect(jsonPath("$.daysOfWeek", hasSize(3)))
+                .andExpect(jsonPath("$.daysOfWeek[0]").value("MONDAY"))
+                .andExpect(jsonPath("$.intakeTimes", hasSize(2)))
+                .andExpect(jsonPath("$.intakeTimes[0]").value("08:00:00"));
     }
-
     @Test
     void shouldReturnMyMedicines() throws Exception {
         Medicine m1 = new Medicine();

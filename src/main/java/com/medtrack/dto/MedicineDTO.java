@@ -1,6 +1,7 @@
 package com.medtrack.dto;
 
 import lombok.Data;
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -9,6 +10,7 @@ public class MedicineDTO {
     private String name;
     private String dosage;
     private boolean active;
-    private List<InTakeScheduleDTO> schedules;
+    private List<String> daysOfWeek;
+    private List<LocalTime> intakeTimes;
     private Long userId;
 }
