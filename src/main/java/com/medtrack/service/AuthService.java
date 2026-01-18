@@ -21,6 +21,7 @@ public class AuthService {
     }
 
     public AuthResponseDTO login(LoginRequestDTO request) {
+        System.out.println("Intentando login para: " + request.getEmail());
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 

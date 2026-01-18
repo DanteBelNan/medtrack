@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@AutoConfigureMockMvc(addFilters = false) // Desactivamos seguridad para este test inicial
+@AutoConfigureMockMvc(addFilters = false) //PENDING, REMOVE THIS LINE AND MAKE IT WORK
 class UserControllerTest {
 
     @Autowired
@@ -44,8 +44,8 @@ class UserControllerTest {
     @Test
     void shouldRegisterUserCorrectly() throws Exception {
         UserRegistrationDTO registration = new UserRegistrationDTO();
-        registration.setName("Dante Beltran");
-        registration.setEmail("dante.beltran@utn.edu.ar");
+        registration.setName("John Doe");
+        registration.setEmail("johndoe@email.com");
         registration.setPassword("securePassword123");
 
         mockMvc.perform(post("/api/users/register")
@@ -53,14 +53,13 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(registration)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("Dante Beltran"))
-                .andExpect(jsonPath("$.email").value("dante.beltran@utn.edu.ar"))
-                .andExpect(jsonPath("$.password").doesNotExist()); // ¡Vital por seguridad!
+                .andExpect(jsonPath("$.name").value("John Doe"))
+                .andExpect(jsonPath("$.email").value("johndoe@email.com"))
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
 
     @Test
     void shouldReturnAllUsers() throws Exception {
-        // Registramos dos usuarios directamente para probar el listado
         UserRegistrationDTO u1 = new UserRegistrationDTO();
         u1.setName("User One");
         u1.setEmail("one@test.com");
