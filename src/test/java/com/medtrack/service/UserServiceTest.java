@@ -34,7 +34,6 @@ class UserServiceTest {
 
     @Test
     void shouldHashPasswordOnRegistration() {
-        // Arrange
         UserRegistrationDTO regDto = new UserRegistrationDTO();
         regDto.setName("John Doe");
         regDto.setEmail("johndoe@email.com");

@@ -27,7 +27,6 @@ class UserDetailsServiceImplTest {
 
     @Test
     void shouldLoadUserByUsernameWhenUserExists() {
-        // Arrange
         User user = new User();
         user.setEmail("johndoe@email.com");
         user.setPassword("encoded_password");

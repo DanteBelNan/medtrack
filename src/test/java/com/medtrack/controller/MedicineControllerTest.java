@@ -135,7 +135,7 @@ class MedicineControllerTest {
         med = medicineRepository.save(med);
 
         mockMvc.perform(get("/api/medicines/" + med.getId())
-                        .header("Authorization", "Bearer " + token)) // Header JWT
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Enalapril"))
                 .andExpect(jsonPath("$.dosage").value("5mg"));
@@ -155,7 +155,7 @@ class MedicineControllerTest {
         medicineRepository.save(med);
 
         mockMvc.perform(get("/api/medicines/user/" + testUser.getId())
-                        .header("Authorization", "Bearer " + token)) // Usamos el token de John Doe
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].name").value("Loratadina"));

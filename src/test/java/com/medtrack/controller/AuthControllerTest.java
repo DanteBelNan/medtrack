@@ -37,25 +37,21 @@ class AuthControllerTest {
 
     @BeforeEach
     void setup() {
-        // Limpiar la base de datos antes de cada test
         userRepository.deleteAll();
     }
 
     @Test
     void shouldLoginAndReturnToken() throws Exception {
-        // Arrange: Registrar usuario
         UserRegistrationDTO reg = new UserRegistrationDTO();
         reg.setName("John Doe");
         reg.setEmail("johndoe@email.com");
         reg.setPassword("password123");
         userService.register(reg);
 
-        // Act: Intentar login
         LoginRequestDTO login = new LoginRequestDTO();
         login.setEmail("johndoe@email.com");
         login.setPassword("password123");
 
-        // Assert: Verificar que retorna token
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(login)))
@@ -66,19 +62,16 @@ class AuthControllerTest {
 
     @Test
     void shouldFailLoginWithWrongPassword() throws Exception {
-        // Arrange: Registrar usuario primero
         UserRegistrationDTO reg = new UserRegistrationDTO();
         reg.setName("John Doe");
         reg.setEmail("johndoe@email.com");
         reg.setPassword("password123");
         userService.register(reg);
 
-        // Act: Intentar login con password incorrecta
         LoginRequestDTO login = new LoginRequestDTO();
         login.setEmail("johndoe@email.com");
         login.setPassword("wrong_pass");
 
-        // Assert: Debería fallar
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(login)))
